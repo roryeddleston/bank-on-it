@@ -1,16 +1,12 @@
 'use strict';
 
 /////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANK ON IT APP
-
-/////////////////////////////////////////////////
 // Data
 
 const account1 = {
   owner: 'Rory Eddleston',
   movements: [2000, 112.5, -422, 10000, -657.72, -860.73, 630.85, 1300],
-  interestRate: 1.6, // %
+  interestRate: 1.6,
   pin: 1111,
 
   movementsDates: [
@@ -24,7 +20,7 @@ const account1 = {
     '2021-02-16T10:51:36.790Z'
   ],
   currency: 'GBP',
-  locale: 'en-GB' // de-DE
+  locale: 'en-GB'
 };
 
 const account2 = {
@@ -50,7 +46,7 @@ const account2 = {
 const account3 = {
   owner: 'Pedro Aldar',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, // %
+  interestRate: 1.2,
   pin: 3333,
 
   movementsDates: [
@@ -64,13 +60,14 @@ const account3 = {
     '2020-08-01T10:51:36.790Z'
   ],
   currency: 'EUR',
-  locale: 'pt-PT' // de-DE
+  locale: 'pt-PT'
 };
 
 const accounts = [account1, account2, account3];
 
 /////////////////////////////////////////////////
-// Elements
+// Variables
+
 const labelWelcome = document.querySelector('.welcome');
 const labelDate = document.querySelector('.date');
 const labelBalance = document.querySelector('.balance__value');
@@ -104,16 +101,11 @@ const formatMovementDate = function(date, locale) {
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
   const daysPassed = calcDaysPassed(new Date(), date);
-  console.log(daysPassed);
 
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed <= 7) return `${daysPassed} days ago`;
 
-  // const day = `${date.getDate()}`.padStart(2, 0);
-  // const month = `${date.getMonth() + 1}`.padStart(2, 0);
-  // const year = date.getFullYear();
-  // return `${day}/${month}/${year}`;
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
@@ -147,7 +139,6 @@ const displayMovements = function(acc, sort = false) {
         <div class="movements__value">${formattedMov}</div>
       </div>
     `;
-
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
@@ -172,7 +163,6 @@ const calcDisplaySummary = function(acc) {
     .filter(mov => mov > 0)
     .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => {
-      // console.log(arr);
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
@@ -215,8 +205,6 @@ const startLogOutTimer = function() {
       labelWelcome.textContent = 'Log in to get started';
       containerApp.style.opacity = 0;
     }
-
-    // Decrease 1s
     time--;
   };
 
@@ -231,31 +219,26 @@ const startLogOutTimer = function() {
 };
 
 ///////////////////////////////////////
-// Event handlers
 let currentAccount, timer;
 
 // FAKE ALWAYS LOGGED IN
-// currentAccount = account1;
-// updateUI(currentAccount);
-// containerApp.style.opacity = 100;
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
 
 btnLogin.addEventListener('click', function(e) {
-  // Prevent form from submitting
   e.preventDefault();
 
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
 
   if (currentAccount?.pin === +inputLoginPin.value) {
-    // Display UI and message
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(' ')[0]
     }`;
     containerApp.style.opacity = 100;
 
-    // Create current date and time
     const now = new Date();
     const options = {
       hour: 'numeric',
@@ -263,22 +246,12 @@ btnLogin.addEventListener('click', function(e) {
       day: 'numeric',
       month: 'numeric',
       year: 'numeric'
-      // weekday: 'long',
     };
-    // const locale = navigator.language;
-    // console.log(locale);
 
     labelDate.textContent = new Intl.DateTimeFormat(
       currentAccount.locale,
       options
     ).format(now);
-
-    // const day = `${now.getDate()}`.padStart(2, 0);
-    // const month = `${now.getMonth() + 1}`.padStart(2, 0);
-    // const year = now.getFullYear();
-    // const hour = `${now.getHours()}`.padStart(2, 0);
-    // const min = `${now.getMinutes()}`.padStart(2, 0);
-    // labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
 
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
@@ -370,9 +343,6 @@ btnClose.addEventListener('click', function(e) {
     const index = accounts.findIndex(
       acc => acc.username === currentAccount.username
     );
-    console.log(index);
-    // .indexOf(23)
-
     // Delete account
     accounts.splice(index, 1);
 
